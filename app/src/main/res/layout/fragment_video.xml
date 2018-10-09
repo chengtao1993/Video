@@ -1,0 +1,70 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.archermind.video.VideoFragment">
+
+    <TextView android:id="@+id/data_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="本地"
+        android:textSize="36dp"
+        android:textColor="#ffffff"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="150dp"/>
+    <ImageView android:id="@+id/source_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/source_icon"
+        android:layout_marginTop="42dp"
+        android:layout_marginStart="930dp"
+        android:layout_marginLeft="930dp"
+        android:padding="10dp"/>
+    <FrameLayout
+        android:layout_width="920dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_display_content"
+        android:layout_marginTop="142dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginLeft="80dp">
+        <TextView android:id="@+id/orderBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="34dp"
+            android:layout_marginStart="622dp"
+            android:layout_marginLeft="622dp"
+            android:text="按创建时间排序"
+            android:textSize="30dp"
+            android:textColor="#ffffff"/>
+        <ImageView android:id="@+id/order_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="841dp"
+            android:layout_marginLeft="841dp"
+            android:src="@drawable/order_icon"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/listview_topline"
+            android:visibility="gone"
+            android:layout_marginTop="110dp"/>
+
+        <ListView android:id="@+id/dataDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="110dp"></ListView>
+        <TextView android:id="@+id/noFile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="110dp"
+            android:text="文件夹为空"
+            android:textColor="#ffffff"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</FrameLayout>
