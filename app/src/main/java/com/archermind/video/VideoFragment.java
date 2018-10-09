@@ -46,9 +46,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
     private String mParam1;
     private String mParam2;
     private Context mContext;
-
-    private TextView data_source;
-    private TextView orderBy;
     private ImageView source_switch;
     private ImageView order_switch;
     private TextView noFile;
@@ -102,14 +99,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         videoFragmentView = (FrameLayout) inflater.inflate(R.layout.fragment_video, null, false);
-        source_switch = videoFragmentView.findViewById(R.id.source_switch);
-        source_switch.setOnClickListener(this);
-        order_switch = videoFragmentView.findViewById(R.id.order_switch);
-        order_switch.setOnClickListener(this);
-        orderBy = videoFragmentView.findViewById(R.id.orderBy);
-        data_source = videoFragmentView.findViewById(R.id.data_source);
-        data_source.setOnClickListener(this);
-        data_source.setText(MediaActivity.current_source_name);
         dataListView = VideoUtils.getDataOrderByTime(getActivity(),MediaActivity.current_source_path);
         dataDisplay = videoFragmentView.findViewById(R.id.dataDisplay);
         mVideoAdapter = new VideoAdapter(mContext,dataListView);
@@ -136,18 +125,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
         return videoFragmentView;
     }
 
-   public void resourceChanged(){
-       if (orderBy.getText().equals("按创建时间排序")){
-           data_source.setText(MediaActivity.current_source_name);
-           dataListView = VideoUtils.getDataOrderByTime(getActivity(),MediaActivity.current_source_path);
-       }else if (orderBy.getText().equals("按文件名称排序")){
-           data_source.setText(MediaActivity.current_source_name);
-           dataListView = VideoUtils.getDataOrderByName(getActivity(),MediaActivity.current_source_path);
-       }
-       mVideoAdapter.setData(dataListView);
-       mVideoAdapter.notifyDataSetChanged();
 
-   }
 
     @Override
     public void onResume() {
@@ -184,104 +162,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        switch (id){
-            case R.id.order_switch:
-                orderDialog = new AlertDialog.Builder(getActivity()).create();
-                LinearLayout order_layout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.order_layout,null);
-                TextView orderByName = order_layout.findViewById(R.id.orderByName);
-                orderByName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dataListView = VideoUtils.getDataOrderByName(getActivity(),MediaActivity.current_source_path);
-                        mVideoAdapter.setData(dataListView);
-                        mVideoAdapter.notifyDataSetChanged();
-                        orderBy.setText("按文件名称排序");
-                        orderDialog.dismiss();
-                    }
-                });
-                TextView orderByTime = order_layout.findViewById(R.id.orderByTime);
-                orderByTime.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dataListView = VideoUtils.getDataOrderByTime(getActivity(),MediaActivity.current_source_path);
-                        mVideoAdapter.setData(dataListView);
-                        mVideoAdapter.notifyDataSetChanged();
-                        orderBy.setText("按创建时间排序");
-                        orderDialog.dismiss();
-                    }
-                });
-                orderDialog.setView(order_layout);
-                orderDialog.show();
-                Window dialogWindow = orderDialog.getWindow();
-                WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-                lp.height = 400;
-                lp.width = 942;
-                lp.gravity = Gravity.TOP|Gravity.START;
-                lp.x = 68;
-                lp.y = 340;
-                dialogWindow.setAttributes(lp);
-                break;
-            case R.id.source_switch:
-            case R.id.data_source:
-                sourceDialog = new AlertDialog.Builder(getActivity()).create();
-                LinearLayout source_layout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.source_layout,null);
-                for (String key : MediaActivity.name_path.keySet()) {
-                    LinearLayout item = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.source_item_layout, null);
-                    TextView item_title;
-                    item_title = item.findViewById(R.id.source_title);
-                    item_title.setText(key);
-                    if (key.equals("本地")) {
-                        Drawable left = getActivity().getDrawable(R.drawable.folder);
-                        item_title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
-                    } else {
-                        Drawable left = getActivity().getDrawable(R.drawable.usb);
-                        item_title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
-                    }
-                    item_title.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (data_source.getText().equals(((TextView) v).getText())) {
 
-                            } else {
-                                MediaActivity.current_source_name = (String) ((TextView) v).getText();
-                                MediaActivity.current_source_path = (String) MediaActivity.name_path.get(MediaActivity.current_source_name);
-                                if (orderBy.getText().equals("按创建时间排序")) {
-                                    data_source.setText(MediaActivity.current_source_name);
-                                    dataListView = VideoUtils.getDataOrderByTime(getActivity(), MediaActivity.current_source_path);
-                                } else if (orderBy.getText().equals("按文件名称排序")) {
-                                    data_source.setText(MediaActivity.current_source_name);
-                                    dataListView = VideoUtils.getDataOrderByName(getActivity(), MediaActivity.current_source_path);
-                                }
-                                mVideoAdapter.setData(dataListView);
-                                mVideoAdapter.notifyDataSetChanged();
-                            }
-                            sourceDialog.dismiss();
-                        }
-                    });
-                    source_layout.addView(item);
-                }
-                sourceDialog.setView(source_layout);
-                sourceDialog.show();
-                sourceDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        sourceDialogAutoHide.removeMessages(sourceDialogId);
-                    }
-                });
-                Window dialogWindow1 = sourceDialog.getWindow();
-                WindowManager.LayoutParams lp1 = dialogWindow1.getAttributes();
-                lp1.height = 400;
-                lp1.width = 942;
-                lp1.gravity = Gravity.TOP | Gravity.START;
-                lp1.x = 68;
-                lp1.y = 126;
-                dialogWindow1.setAttributes(lp1);
-                Message message = new Message();
-                message.what = sourceDialogId;
-                sourceDialogAutoHide.sendMessageDelayed(message, 8000);
-                break;
-        }
+
     }
 
     private int sourceDialogId = 1;

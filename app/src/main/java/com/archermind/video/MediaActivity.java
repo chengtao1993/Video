@@ -122,50 +122,20 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
                     current_source_name = entry.getKey();
                     current_source_path = entry.getValue();
                     if (displayTab == videoTab){
-                        videoFragment.resourceChanged();
-                        Log.d("hct","11111");
+
                     }else if (displayTab == videoPlayTab) {
-                        Log.d("hct","222");
                         fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.show(videoFragment).hide(videoPlayFragment);
                         fragmentTransaction.commit();
-                        videoFragment.resourceChanged();
                         displayTab = videoTab;
-                    }/*else if (displayTab == pictureTab){
-                        pictureFragment.resourceChanged();
-                    }else if (displayTab == browserTab){
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_container,pictureFragment);
-                        fragmentTransaction.commit();
-                    }else if (displayTab == fillperTab){
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_container,pictureFragment);
-                        fragmentTransaction.commit();
                     }
-
-                    if (musicFragmentTab == 5){//对应的是MusicFragment
-                        if (musicFragment.data_source.getText().equals(intent.getStringExtra("name"))){
-                            musicFragment.resourceChanged();
-                        }
-                    }else if (musicFragmentTab == 6){//对应的是MusicListFragment
-                        MusicListFragment.fileInfo = ScanMusic.getData(MediaActivity.this,MediaActivity.current_source_path);
-                        MusicListFragment.usbPullOut();
-                    }*/
                 }
 
             }
         };
         registerReceiver(usb_out,filter);
         name_path.put("本地","external");
-       /* musicView = findViewById(R.id.music);
-        musicView.setOnClickListener(this);*/
-       /* videoView = findViewById(R.id.video);
-        videoView.setOnClickListener(this);*/
-       /* photoView = findViewById(R.id.photo);
-        photoView.setOnClickListener(this);*/
-       /* musicFragment = new MusicFragment();*/
         videoFragment = new VideoFragment();
-        /*pictureFragment = new PictureFragment();*/
         videoPlayFragment = new VideoPlayFragment();
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -177,45 +147,19 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
             if (!name_path.containsKey(current_source_name)) {
                 name_path.put(current_source_name, current_source_path);
             }
-           /* if (startFragment.equals("music")){
-                fragmentTransaction.add(R.id.fragment_container,musicFragment);
-                fragmentTransaction.commit();
-                musicView.setSelected(true);
-                displayTab = musicTab;
-                SystemProperties.set("service.gr.show","1");
-            }else if (startFragment.equals("photo")){
-                fragmentTransaction.add(R.id.fragment_container,pictureFragment);
-                fragmentTransaction.commit();
-                photoView.setSelected(true);
-                displayTab = pictureTab;
-                SystemProperties.set("service.gr.show","-1");
-            }else if (startFragment.equals("video")){
-                fragmentTransaction.add(R.id.fragment_container,videoFragment);
-                fragmentTransaction.commit();
-                videoView.setSelected(true);
-                displayTab = videoTab;
-                SystemProperties.set("service.gr.show","2");
-            }*/
+
         }else {
             if (bluetoothAdapter != null
                     && bluetoothAdapter.isEnabled()
                     && bluetoothAdapter.getProfileConnectionState(11) == BluetoothProfile.STATE_CONNECTED) {
-                /*changeToBTMusic();*/
             } else{
                 fragmentTransaction.add(R.id.fragment_container,videoFragment);
                 fragmentTransaction.commit();
-                /*videoView.setSelected(true);*/
+
                 displayTab = videoTab;
-            }/*else {
-                musicFragment.setArguments(intent.getExtras());
-                fragmentTransaction.add(R.id.fragment_container, musicFragment);
-                fragmentTransaction.commit();
-                musicView.setSelected(true);
-                displayTab = musicTab;
-               *//* SystemProperties.set("service.gr.show","1");*//*
-            }*/
+            }
         }
-        /*initCarService();*/
+
         getMessage(this.getIntent());
     }
     private String[] permissionsArray=new String[]{
@@ -387,120 +331,21 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
             if (!name_path.containsKey(current_source_name)) {
                 name_path.put(current_source_name, current_source_path);
             }
-           /* if (startFragment.equals("music")){
-                if (musicFragmentTab == 5){
-                    musicFragment.resourceChanged();
-                }else {
-                    fragmentTransaction.replace(R.id.fragment_container, musicFragment);
-                    fragmentTransaction.commit();
-                    musicView.setSelected(true);
-                    photoView.setSelected(false);
-                    videoView.setSelected(false);
-                    displayTab = musicTab;
-                    SystemProperties.set("service.gr.show","1");
-                }
-            }else if (startFragment.equals("photo")){
-                fragmentTransaction.replace(R.id.fragment_container,pictureFragment);
-                fragmentTransaction.commit();
-                photoView.setSelected(true);
-                videoView.setSelected(false);
-                musicView.setSelected(false);
-                displayTab = pictureTab;
-                SystemProperties.set("service.gr.show","-1");
-            }else */if (startFragment.equals("video")){
+           if (startFragment.equals("video")){
                 if (displayTab == videoTab){
-                    videoFragment.resourceChanged();
                 }else{
                     fragmentTransaction.replace(R.id.fragment_container,videoFragment);
                     fragmentTransaction.commit();
                     displayTab = videoTab;
-                   /* videoView.setSelected(true);*/
-                   /* musicView.setSelected(false);
-                    photoView.setSelected(false);*/
-                   /* SystemProperties.set("service.gr.show","2");*/
+
                 }
             }
         }else {
             getMessage(intent);
         }
     }
-    private Fragment myFagment;
-/*    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        switch (id){
-            case R.id.music:
-                if (displayTab == musicTab){
-                    //not need process
-                }else{
-                    if (bluetoothAdapter != null
-                            && bluetoothAdapter.isEnabled()
-                            && bluetoothAdapter.getProfileConnectionState(11) == BluetoothProfile.STATE_CONNECTED) {
-                        changeToBTMusic();
-                    } else {
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                        fragmentTransaction.replace(R.id.fragment_container,musicFragment);
-                        fragmentTransaction.commit();
-                    }
-                    displayTab = musicTab;
-                    musicView.setSelected(true);
-                    videoView.setSelected(false);
-                    photoView.setSelected(false);
 
-                    SystemProperties.set("service.gr.show","1");
-                }
-                break;
-            case R.id.video:
-                if (displayTab == videoTab || videoPlayFragment.isVisible()){
-                    //not need process
-                }else{
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container,videoFragment);
-                    fragmentTransaction.commit();
-                    displayTab = videoTab;
-                    videoView.setSelected(true);
-                    musicView.setSelected(false);
-                    photoView.setSelected(false);
-                    SystemProperties.set("service.gr.show","2");
-                }
-                break;
-            case R.id.photo:
-                if (displayTab == pictureTab){
-                    //not need process
-                }else{
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container,pictureFragment);
-                    fragmentTransaction.commit();
-                    displayTab = pictureTab;
-                    photoView.setSelected(true);
-                    videoView.setSelected(false);
-                    musicView.setSelected(false);
-                    SystemProperties.set("service.gr.show","-1");
-                }
-                break;
 
-        }
-
-    }*/
-    public static boolean isBT=false;
-   /* public void changeToBTMusic() {
-        isBT=true;
-        myFagment = null;
-        myFagment = new BtMusicFragment();
-        Bundle bundle = new Bundle();
-//        bundle.putBoolean("flag",flag2);
-        bundle.putString("titleName","蓝牙音乐");
-        myFagment.setArguments(bundle);
-        FragmentTransaction transaction= getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container,myFagment);
-        transaction.commitAllowingStateLoss();
-        musicView.setSelected(true);
-        photoView.setSelected(false);
-        videoView.setSelected(false);
-        displayTab = musicTab;
-        SystemProperties.set("service.gr.show","1");
-    }*/
 
     @Override
     public void onVideoFragmentInteraction(String action, ArrayList<FileInfo> arrayList, int i) {
@@ -541,25 +386,7 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
     }
 
 
-/*    private final ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            try {
-                mCarHUDManager=(CarHUDManager)mCar.getCarManager(Car.HUD_SERVICE);
-            } catch (CarNotConnectedException e) {
-                e.printStackTrace();
-            }
-            Log.e("ccc", "Car is connected!");
 
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.e("ccc", "Car service is disconnected");
-        }
-    };*/
-
-    // CH <BugId:2419> <lizhi> <20180324> modify begin
     public int requestAudioFocus(AudioManager.OnAudioFocusChangeListener l, int streamType, int durationHint) {
         if (audioManager == null) return -1;
         return audioManager.requestAudioFocus(
