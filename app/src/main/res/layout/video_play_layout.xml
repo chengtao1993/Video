@@ -2,27 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView android:id="@+id/close_video"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/close_video"
-        android:layout_marginTop="80dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginLeft="22dp"/>
-    <TextView android:id="@+id/data_source"
-        android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:text="本地"
-        android:textSize="36dp"
-        android:textColor="#ffffff"
-        android:layout_marginTop="80dp"
-        android:layout_marginStart="104dp"
-        android:layout_marginLeft="104dp"
-        android:gravity="center_vertical"/>
     <LinearLayout android:id="@+id/video_container"
+        android:background="#00ff00"
         android:layout_width="1080dp"
         android:layout_height="810dp"
-        android:layout_marginTop="165dp"
         android:gravity="center">
         <VideoView android:id="@+id/videoView"
             android:layout_width="wrap_content"
@@ -36,7 +19,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:background="@drawable/bg_process"
-        android:layout_marginTop="995dp">
+        android:layout_marginTop="795dp">
         <TextView android:id="@+id/time_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +43,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1100dp"
+        android:layout_marginTop="900dp"
         android:background="@drawable/bg_controll"
         android:layout_marginLeft="40dp"
         android:layout_marginStart="40dp"

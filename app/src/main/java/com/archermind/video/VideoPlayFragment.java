@@ -45,7 +45,6 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
     private VideoView mVideoView;
     private TextView time_current;
     private TextView time_total;
-    private TextView dataSource;
     private ImageView videoplaystate;
     private boolean isPlayingComplete = false;
     private ImageView rewind;
@@ -125,27 +124,6 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        //对获得的参数进行修订
-       /* SystemProperties.set("service.gr.show","2");*/
-//        if("prev".equals(videocontrol)){
-//            //上一首
-//            playlast();
-//            Log.i("ccc","...prve");
-//        }else if("next".equals(videocontrol)){
-//            //下一首
-//            playNext();
-//            Log.i("ccc","...next");
-//        }else if("play".equals(videosetting)){
-//            Log.i("ccc","...play");
-//            //播放
-//            SystemProperties.set("service.gr.play","1");
-//        }else if("pause".equals(videosetting)){
-//            //暂停
-//
-//            SystemProperties.set("service.gr.play","0");
-//            Log.i("ccc","...pause");
-//        }
-
     }
 
     private GestureDetector gestureDetector;
@@ -283,7 +261,6 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
         mVideoPlayController.stop();
         mVideoPlayController.setVideoPath(mFileInfo.path);
         mVideoPlayController.start();
-        dataSource.setText(mFileInfo.name);
     }
 
     @Override
@@ -359,17 +336,12 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
             public void onCompletion(MediaPlayer mediaPlayer) {
                 videoplaystate.setSelected(false);
                 isPlayingComplete = true;
-               /* if (MediaActivity.mCarHUDManager != null) {
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "0");
-                }
-                SystemProperties.set("service.gr.play","0");*/
+
             }
         });
 
-        // CH <BugId:2419> <lizhi> <20180324> modify begin
+
         mVideoPlayController = new VideoPlayController(getActivity(), mVideoView);
-        // CH <BugId:2419> <lizhi> <20180324> modify end
-        //modify by yanglin for fileinfo == null begin
         if(mFileInfo != null){
             if (mFileInfo.uri == null){
                 mVideoPlayController.setVideoPath(mFileInfo.path);
@@ -377,36 +349,19 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
                 mVideoPlayController.setVideoUri(mFileInfo.uri);
             }
             mVideoPlayController.start();
-            /*if(MediaActivity.mCarHUDManager != null) {
-                MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "1");
-            }*/
-            dataSource = videoPlayLayout.findViewById(R.id.data_source);
-            dataSource.setText(mFileInfo.name);
+
             if(localFileId > 0 && localFileId < data.size()-1) {
-               /* if (MediaActivity.mCarHUDManager != null) {
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId - 1).name);
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId + 1).name);
-                }*/
+
             }else if(localFileId == 0){
-                /*if(MediaActivity.mCarHUDManager != null){
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);*/
-                    //add by yanglin fixed for size = 1 begin
+
                     if(data.size() > 1){
-                       /* if (MediaActivity.mCarHUDManager != null) {
-                            MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId+1).name);
-                        }*/
+
                     }
-                    //add by yanglin fixed for size = 1 end
-               /* }*/
+
             }else if(localFileId == data.size()-1){
-                /*if (MediaActivity.mCarHUDManager != null) {
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId - 1).name);
-                }*/
+
             }
         }
-        //modify by yanglin for fileinfo == null end
         time_current = videoPlayLayout.findViewById(R.id.time_current);
         time_total = videoPlayLayout.findViewById(R.id.time_total);
 
@@ -425,10 +380,6 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
 
         fastforward = videoPlayLayout.findViewById(R.id.fastforward);
         fastforward.setOnClickListener(this);
-
-        close_video = videoPlayLayout.findViewById(R.id.close_video);
-        close_video.setOnClickListener(this);
-
         gestureDetector = new GestureDetector(getContext(),onGestureListener);
 
         video_container = videoPlayLayout.findViewById(R.id.video_container);
@@ -442,7 +393,6 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
         message = new Message();
         message.what = 1;
         displayCurrentTime.sendMessage(message);
-
         return videoPlayLayout;
     }
 
@@ -538,18 +488,6 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
                     }
                 }
                 break;
-            case R.id.close_video:
-                /*if(MediaActivity.mCarHUDManager != null) {
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_CLOSE);
-                }*/
-                fastJump.removeMessages(2);
-                num_click_fastforward = 0;
-                num_click_rewind = 0;
-                mVideoPlayController.pause();
-                videoplaystate.setSelected(false);
-                displayCurrentTime.removeMessages(1);
-                mOnFragmentInteractionListener.onVideoPlayFragmentInteraction("VideoList");
-                break;
         }
     }
 
@@ -560,17 +498,11 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
         if (view.isSelected()){
             view.setSelected(false);
             mVideoPlayController.pause();
-           /* if (MediaActivity.mCarHUDManager != null) {
-                MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "0");
-            }*/
-           // MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_CLOSE);
             displayCurrentTime.removeMessages(1);
         }else {
             view.setSelected(true);
             mVideoPlayController.resume();
-            /*if(MediaActivity.mCarHUDManager != null) {
-                MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "1");
-            }*/
+
             isPlayingComplete = false;
             message = new Message();
             message.what = 1;
@@ -585,18 +517,12 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
                 Log.i("ccc","pause");
                 videoplaystate.setSelected(false);
                 mVideoPlayController.pause();
-               /* if (MediaActivity.mCarHUDManager != null) {
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "0");
-                }*/
-                //MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_CLOSE);
+
             }
         }else if("play".equals(MediaActivity.message)){
             if(!videoplaystate.isSelected()) {
                 videoplaystate.setSelected(true);
                 mVideoPlayController.resume();
-                /*if(MediaActivity.mCarHUDManager != null) {
-                    MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "1");
-                }*/
                 isPlayingComplete = false;
                 Log.i("ccc","play");
             }
@@ -629,29 +555,7 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
              }else {
                  mVideoPlayController.setVideoUri(mFileInfo.uri);
              }
-             if(localFileId>0&&localFileId<data.size()-1) {
-                /* if(MediaActivity.mCarHUDManager != null) {
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId - 1).name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId + 1).name);
-                 }*/
-             }else if(localFileId==0){
-                 /*if(MediaActivity.mCarHUDManager != null) {
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId + 1).name);
-                 }*/
-             }else if(localFileId==data.size()-1){
-                 /*if(MediaActivity.mCarHUDManager != null) {
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId - 1).name);
-                 }*/
-             }
              mVideoPlayController.start();
-            /* if(MediaActivity.mCarHUDManager != null) {
-                 MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "1");
-             }*/
-             dataSource.setText(mFileInfo.name);
-
              break;
          }
 
@@ -676,28 +580,7 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
              }else {
                  mVideoPlayController.setVideoUri(mFileInfo.uri);
              }
-             if(localFileId>0&&localFileId<data.size()-1) {
-                 /*if(MediaActivity.mCarHUDManager != null) {
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId - 1).name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId + 1).name);
-                 }*/
-             }else if(localFileId==0){
-                 /*if(MediaActivity.mCarHUDManager != null) {
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId + 1).name);
-                 }*/
-             }else if(localFileId==data.size()-1){
-                 /*if(MediaActivity.mCarHUDManager != null) {
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_NAME, mFileInfo.name);
-                     MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PRE_NAME, data.get(localFileId - 1).name);
-                 }*/
-             }
              mVideoPlayController.start();
-             /*if (MediaActivity.mCarHUDManager != null) {
-                 MediaActivity.mCarHUDManager.SendHudMoudlesValue(Car.HUD_VIDEO_PLAYING_STATUS, "1");
-             }*/
-             dataSource.setText(mFileInfo.name);
              break;
          }
 
@@ -757,6 +640,5 @@ public class VideoPlayFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onPause() {
         super.onPause();
-       /* SystemProperties.set("service.gr.play","0");*/
     }
 }

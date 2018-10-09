@@ -59,53 +59,33 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_SETTINGS,
             Manifest.permission.MANAGE_DOCUMENTS,
-           /* Manifest.permission.WRITE_MEDIA_STORAGE*/};
-    /*public static CarHUDManager mCarHUDManager;*/
-    public static int displayTab = 2;
-    /*private int musicTab =1;*/
-    private int videoTab =2;
-    /*public static int pictureTab = 3;*/
-    private int videoPlayTab = 4;
-   /* public static int browserTab = 5;
-    public static int fillperTab = 6;
-    public static int musicFragmentTab=5;*/
+          };
 
+    public static int displayTab = 2;
+    private int videoTab =2;
+    private int videoPlayTab = 4;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-    /*public MusicFragment musicFragment;*/
     private VideoFragment videoFragment;
-    /*private PictureFragment pictureFragment;*/
     private VideoPlayFragment videoPlayFragment;
-    /*private TextView musicView;*/
-    private TextView videoView;
-    /*private TextView photoView;*/
-
     private Intent intent;
     public static String current_source_name = "本地";
     public static String current_source_path = "external";
     public static HashMap<String,String> name_path = new HashMap();
     private String startFragment;
     private BroadcastReceiver usb_out;
-    private String videocontrol;
-    private String videosetting;
-    private String musicsetting;
-    private String musiccontrol;
     private String type;
     public  static int currentPosition =0;
-
-    // CH <BugId:2419> <lizhi> <20180324> modify begin
     private AudioManager audioManager;
     private BluetoothAdapter bluetoothAdapter;
-    // CH <BugId:2419> <lizhi> <20180324> modify end
-
     private ArrayList<FileInfo> videoArraryList;
-    public static boolean isFirstStart=true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        //requestPermissions(PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+        requestPermissions(PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
         checkRequiredPermission(this);
         setContentView(R.layout.activity_media);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -194,11 +174,7 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
 
         }
     }
-    /*private Car mCar;
-    private void initCarService() {
-        mCar = Car.createCar(this, mConnection);
-        mCar.connect();
-    }*/
+
     public static  String  message;
     private void getMessage(Intent intent) {
         //获得的视频的动作
@@ -223,67 +199,29 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
                     transaction.replace(R.id.fragment_container, videoPlayFragment);
                     transaction.commit();
                     displayTab = videoPlayTab;
-                    videoView.setSelected(true);
-                    /*musicView.setSelected(false);
-                    photoView.setSelected(false);*/
+
                 }else {
                     VideoPlayFragment videoplayFragment = (VideoPlayFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     message = actionBuddle.getString(type);
                     Log.i("ccc", "message"+message);
                     videoplayFragment.pauseOrPlay();
                 }
-                /*SystemProperties.set("service.gr.show", "2");*/
 
-            } /*else if (type.equals("music_setting")||type.equals("music_control")) {
-                if(displayTab==musicTab){
-                    Log.i("ccc", "actionBuddle4" + actionBuddle);
-                    message = actionBuddle.getString(type);
-                    MusicFragment musicfg = (MusicFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                    try {
-                        musicfg.receiveMessageAndSetData();
-                    }catch (Exception e){
-                        Log.i("ccc", "33333" + e);
-                    }
-                }else {
-                    musicFragment = null;
-                    musicFragment = new MusicFragment();
-                    musicFragment.setArguments(actionBuddle);
-                    Log.i("ccc", "actionBuddle2" + actionBuddle);
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, musicFragment);
-                    transaction.commit();
-                    musicView.setSelected(true);
-                    photoView.setSelected(false);
-                    videoView.setSelected(false);
-                    displayTab = musicTab;
-                    SystemProperties.set("service.gr.show", "1");
-                    Log.i("ccc", "///////////////////////////////////////" + SystemProperties.get("service.gr.show"));
-                }
-            }*/
+
+            }
         }
-          /*SystemProperties.get("service.gr.show");*/
+
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-       /* SystemProperties.set("service.gr.show","-1");*/
-//        if (videoPlayFragment != null){
-//            if (videoPlayFragment.isVisible()){
-//                videoPlayFragment.mVideoPlayController.stop();
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.show(videoFragment).remove(videoPlayFragment);
-//                fragmentTransaction.commit();
-//                displayTab = videoTab;
-//            }
-//        }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
-        /*mCar.disconnect();*/
-
     }
     private ArrayList<FileInfo> dataList;
     @Override
@@ -294,16 +232,7 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
         }catch (Exception e){
             Log.i("ccc","---MediaActivity---"+e);
         }
-
-       /* if (videoFragment.isVisible()){
-            SystemProperties.set("service.gr.show","2");
-        }
-        if (musicFragment.isVisible()){
-            SystemProperties.set("service.gr.show","1");
-        }*/
-        //add by yanglan begin
         IntentActionPlay();
-        //add by yanglan end
     }
 
     @Override
@@ -312,7 +241,7 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
         try {
             if (usb_out!=null)
                 unregisterReceiver(usb_out);
-               /*unbindService(mConnection);*/
+
         }catch (Exception e){
             Log.i("media",""+e);
         }
@@ -387,47 +316,14 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
 
 
 
-    public int requestAudioFocus(AudioManager.OnAudioFocusChangeListener l, int streamType, int durationHint) {
-        if (audioManager == null) return -1;
-        return audioManager.requestAudioFocus(
-                l,
-                streamType,
-                durationHint);
-    }
 
-    public int abandonAudioFocus(AudioManager.OnAudioFocusChangeListener l) {
-        if (audioManager == null) return -1;
-        return audioManager.abandonAudioFocus(l);
-    }
-
-    public void setVoiceVolume(float value) {
-        try {
-            int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);//(最大值是15)
-            int flag = value > 0 ? -1 : 1;
-            currentVolume += flag * 0.1 * maxVolume;
-            // 对currentVolume进行限制
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    // CH <BugId:2419> <lizhi> <20180324> modify end
-    //add by yanglan begin
     private void IntentActionPlay() {
     	if(getIntent() != null && getIntent().getData() != null) {
-            if (displayTab == videoTab){
-                //not need process
-            }else{
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container,videoFragment);
-                fragmentTransaction.commit();
-                displayTab = videoTab;
-               /* videoView.setSelected(true);*/
-                /*musicView.setSelected(false);
-                photoView.setSelected(false);*/
-               /* SystemProperties.set("service.gr.show","2");*/
-            }
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container,videoFragment);
+            fragmentTransaction.commit();
+            displayTab = videoTab;
+
             FileInfo info = new FileInfo();
             info.isFile = true;
             info.uri = intent.getData();
@@ -468,5 +364,5 @@ public class MediaActivity extends FragmentActivity implements VideoFragment.OnF
         String fileName = data.substring(data.lastIndexOf("/") + 1, data.length());
         return fileName;
     }
-    //add by yanglan end
+
 }

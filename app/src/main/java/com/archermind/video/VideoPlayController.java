@@ -52,22 +52,19 @@ public class VideoPlayController {
 
     protected void start(){
         mVideoView.start();
-       /* SystemProperties.set("service.gr.play","1");*/
     }
 
     protected void pause(){
         mVideoView.pause();
-       /* SystemProperties.set("service.gr.play","0");*/
+
     }
 
     protected void resume(){
         mVideoView.start();
-        /*SystemProperties.set("service.gr.play","1");*/
     }
 
     public void stop(){
         mVideoView.stopPlayback();
-       /* SystemProperties.set("service.gr.play","0");*/
     }
 
     protected void seekto(int time){

@@ -1,37 +1,20 @@
 package com.archermind.video;
 
-import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import com.archermind.video.MediaActivity;
-import com.archermind.video.R;
-/*import android.os.SystemProperties;*/
-
 import java.util.ArrayList;
-import com.archermind.video.FileInfo;
 
-import com.archermind.video.VideoFragment;
 
 
 
@@ -43,19 +26,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private Context mContext;
-    private ImageView source_switch;
-    private ImageView order_switch;
     private TextView noFile;
     private ListView dataDisplay;
     private FrameLayout videoFragmentView;
     private ArrayList<FileInfo> dataListView;
     private VideoAdapter mVideoAdapter;
-
-    private AlertDialog sourceDialog;
-    private AlertDialog orderDialog;
 
 
     public VideoFragment() {
@@ -87,8 +63,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
             videocontrol = getArguments().getString("video_control");
             videosetting = getArguments().getString("video_setting");
             Log.i("ccc","videocontrol"+videocontrol);
@@ -107,14 +81,18 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (dataListView.get(i).isFile){
+                    Log.d("hct","aaaa");
                     onFragmentInteractionListener.onVideoFragmentInteraction("playVideo",dataListView,i);
                 }else {
+                    Log.d("hct","bbbb");
                     dataListView = VideoUtils.scanLocalFile(dataListView.get(i).path);
                     if (dataListView.size() == 0){
+                        Log.d("hct","cccc");
                         Toast.makeText(mContext,"aaaaa",Toast.LENGTH_SHORT).show();
                         noFile = videoFragmentView.findViewById(R.id.noFile);
                         noFile.setVisibility(View.VISIBLE);
                     }else {
+                        Log.d("hct","dddd");
                         mVideoAdapter.setData(dataListView);
                         mVideoAdapter.notifyDataSetChanged();
                     }
@@ -165,19 +143,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener{
 
 
     }
-
-    private int sourceDialogId = 1;
-    private Handler sourceDialogAutoHide = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == sourceDialogId) {
-                if (sourceDialog != null && sourceDialog.isShowing()) {
-                    sourceDialog.dismiss();
-                }
-            }
-        }
-    };
 
     public interface OnFragmentInteractionListener {
         void onVideoFragmentInteraction(String action,ArrayList<FileInfo> arrayList,int i);
